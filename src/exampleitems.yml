@@ -1,0 +1,22 @@
+example_sword:
+  display_name: example sword
+  material: STONE_SWORD
+  rarity: common
+  type: sword
+  description: An example sword
+  damage: 1
+  enchantments:
+    KNOCKBACK: 1
+  powers:
+    LIFESTEAL: 1
+example_bow:
+  display_name: example bow
+  material: BOW
+  rarity: common
+  type: sword
+  description: An example bow
+  damage: 1
+  enchantments:
+    ARROW_FIRE: 1
+  powers:
+    BLINK: 1
