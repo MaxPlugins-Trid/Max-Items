@@ -1,0 +1,8 @@
+name: MaxItems
+version: Dev 0.3
+author: TridiumX and Scourge1211
+main: com.tridiumx.maxitems.MaxItems
+commands:
+ mi:
+   description: The main command for Max Items
+   usage: /mi
