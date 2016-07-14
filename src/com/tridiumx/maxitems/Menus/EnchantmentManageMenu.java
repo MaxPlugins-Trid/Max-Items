@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
@@ -37,13 +38,18 @@ public class EnchantmentManageMenu extends Menu {
         //Chat Events
         if(e instanceof AsyncPlayerChatEvent){
             AsyncPlayerChatEvent event = (AsyncPlayerChatEvent) e;
+
             if(event.getPlayer().equals(p)){
+
                 if(p.hasMetadata("ACTION")){
+                    p.sendMessage("Got this far");//TAKEOUT
+                    p.sendMessage(p.getMetadata("ACTION").get(0).toString());
                     if(getPlayerMeta(p, "ACTION").equals("ENCHANT")){
-                        ItemStack itemWorkingWith = (ItemStack) p.getMetadata("ITEM_WORKING_WITH");
-                        File file = new File(pl.getDataFolder(), ChatColor.stripColor(itemWorkingWith.getItemMeta().getDisplayName()) + ".yml");
+
+                        String itemWorkingWith = p.getMetadata("ITEM_WORKING_WITH").get(0).asString();
+                        File file = new File(pl.getDataFolder(), itemWorkingWith + ".yml");
                         Configuration pack = YamlConfiguration.loadConfiguration(file);
-                        pack.set(ChatColor.stripColor(itemWorkingWith.getItemMeta().getDisplayName()) + ".enchantments." + getPlayerMeta(p, "ENCHANT_WORKING_WITH"),event.getMessage());
+                        pack.set(itemWorkingWith + ".enchantments." + getPlayerMeta(p, "ENCHANT_WORKING_WITH"),event.getMessage());
                         p.removeMetadata("ENCHANT_WORING_WITH", pl);
                         p.removeMetadata("ACTION", pl);
                         event.setCancelled(true);
@@ -55,9 +61,10 @@ public class EnchantmentManageMenu extends Menu {
         }
         if(e instanceof InventoryClickEvent){
             InventoryClickEvent event = (InventoryClickEvent) e;
-            if(event.getInventory().getTitle().equals(inv.getTitle())){
+            p.sendMessage("Event is clearly registered nub");//TAKEOUT
+            if(event.getInventory().getTitle().equals(inv.getTitle()) && event.getAction() == InventoryAction.PICKUP_ALL){
                 Player player = (Player) event.getWhoClicked();
-                setPlayerMeta(player, "ACTION", "ENCHANT");
+                setPlayerMeta(p, "ACTION", "ENCHANT");
                 event.setCancelled(true);
                 player.closeInventory();
                 setPlayerMeta(p, "ENCHANT_WORKING_WITH", ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName()));

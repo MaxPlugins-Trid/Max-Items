@@ -5,6 +5,7 @@ import com.tridiumx.maxitems.Menus.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -44,5 +45,12 @@ public class MenuManager {
             }
         }
         return null;
+    }
+    public Menu initNewMenu(Menu menu, Player p, int size, String name){
+        Menu m = menu;
+        m.p = p;
+        m.init(size, name, pl, this);
+
+        return m;
     }
 }
