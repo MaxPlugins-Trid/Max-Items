@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
@@ -102,9 +103,10 @@ public class StatManageMenu extends Menu {
     @Override
     public void eventHandler(Event e) {
         //chat events
-        if(e instanceof AsyncPlayerChatEvent){
+        if (e instanceof AsyncPlayerChatEvent) {
             AsyncPlayerChatEvent event = (AsyncPlayerChatEvent) e;
-            if (event.getPlayer().equals(p) && p.hasMetadata("ACTION")){
+            if (event.getPlayer().equals(p) && p.hasMetadata("ACTION")) {
+
                 String itemWorkingWith = p.getMetadata("ITEM_WORKING_WITH").get(0).asString();
                 String itemPack = p.getMetadata("ITEMPACK").get(0).asString();
                 File file = new File(pl.getDataFolder(), ChatColor.stripColor(itemPack + ".yml"));
@@ -115,29 +117,35 @@ public class StatManageMenu extends Menu {
                     case "DISPLAY_NAME":
                         p.removeMetadata("ACTION", pl);
                         pack.set(itemWorkingWith + ".display_name", event.getMessage());
+                        Open(p);
 
                         break;
                     case "MATERIAL":
                         p.removeMetadata("ACTION", pl);
-                        if(event.getMessage().contains("set")){
+                        if (event.getMessage().contains("set")) {
                             pack.set(itemWorkingWith + ".material", p.getInventory().getItemInMainHand().getType().name());
+                            Open(p);
                         }
                         break;
                     case "RARITY":
                         p.removeMetadata("ACTION", pl);
-                        pack.set(itemWorkingWith+ ".rarity", event.getMessage());
+                        pack.set(itemWorkingWith + ".rarity", event.getMessage());
+                        Open(p);
                         break;
                     case "TYPE":
                         p.removeMetadata("ACTION", pl);
                         pack.set(itemWorkingWith + ".type", event.getMessage());
+                        Open(p);
                         break;
                     case "DESCRIPTION":
                         p.removeMetadata("ACTION", pl);
                         pack.set(itemWorkingWith + ".description", event.getMessage());
+                        Open(p);
                         break;
                     case "DAMAGE":
                         p.removeMetadata("ACTION", pl);
                         pack.set(itemWorkingWith + ".damage", event.getMessage());
+                        Open(p);
                         break;
 
                     default:
@@ -147,65 +155,71 @@ public class StatManageMenu extends Menu {
                 FileConfiguration configuration = (FileConfiguration) pack;
                 try {
                     configuration.save(file);
-                }catch (IOException ex){
+                } catch (IOException ex) {
                     pl.getLogger().severe("Could not save item pack");
                 }
 
 
-                Open(p);
+
             }
         }
         //Gui Click Events
-        if(e instanceof InventoryClickEvent){
+        if (e instanceof InventoryClickEvent) {
             InventoryClickEvent event = (InventoryClickEvent) e;
-            if(event.getInventory().getTitle().equals(inv.getTitle()) && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR){
-                String name = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
-                pl.getLogger().info(name);//Takeout
-                switch (name){
-                    case "Display Name":
-                        p.closeInventory();
-                        setPlayerMeta(p, "ACTION", "DISPLAY_NAME");
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Material":
-                        p.closeInventory();
-                        setPlayerMeta(p, "ACTION", "MATERIAL");
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Rarity":
-                        p.closeInventory();
-                        setPlayerMeta(p, "ACTION", "RARITY");
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Type":
-                        p.closeInventory();
-                        setPlayerMeta(p, "ACTION", "TYPE");
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Description":
-                        p.closeInventory();
-                        setPlayerMeta(p, "ACTION", "DESCRIPTION");
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Damage":
-                        setPlayerMeta(p, "ACTION", "DAMAGE");
-                        p.closeInventory();
-                        pl.getLogger().info(name); //takeout
-                        break;
-                    case "Enchantments":
-                        Menu nextMenu = new EnchantmentManageMenu();
-                        nextMenu.p = (Player) event.getWhoClicked();
-                        nextMenu.init(36, "Enchantments", pl, manager);
-                        nextMenu.Open(p);
-                        break;
-                    case "Powers":
-                        //TODO open power menu
-                        break;
-                    default:
-                        break;
+            if (event.getInventory().getTitle().equals(inv.getTitle()) && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR && event.getAction() == InventoryAction.PICKUP_ALL) {
+                event.setCancelled(true);
+                if (event.getAction().equals(InventoryAction.PICKUP_ALL)) {
+                    String name = ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName());
+                    pl.getLogger().info(name);//Takeout
+
+                    switch (name) {
+                        case "Display Name":
+                            p.closeInventory();
+                            setPlayerMeta(p, "ACTION", "DISPLAY_NAME");
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Material":
+                            p.closeInventory();
+                            setPlayerMeta(p, "ACTION", "MATERIAL");
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Rarity":
+                            p.closeInventory();
+                            setPlayerMeta(p, "ACTION", "RARITY");
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Type":
+                            p.closeInventory();
+                            setPlayerMeta(p, "ACTION", "TYPE");
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Description":
+                            p.closeInventory();
+                            setPlayerMeta(p, "ACTION", "DESCRIPTION");
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Damage":
+                            setPlayerMeta(p, "ACTION", "DAMAGE");
+                            p.closeInventory();
+                            pl.getLogger().info(name); //takeout
+                            break;
+                        case "Enchantments":
+                            setPlayerMeta(p, "ACTION", "ENCHANT");
+                            manager.initNewMenu(new EnchantmentManageMenu(), (Player) event.getWhoClicked(), 27, "Enchantments").Open(p);
+                            //Menu nextMenu = new EnchantmentManageMenu();
+                            //nextMenu.p = (Player) event.getWhoClicked();
+                            //nextMenu.init(36, "Enchantments", pl, manager);
+                            //nextMenu.Open(p);
+                            break;
+                        case "Powers":
+                            //TODO open power menu
+                            break;
+                        default:
+                            break;
+
+                    }
 
                 }
-
             }
         }
     }
