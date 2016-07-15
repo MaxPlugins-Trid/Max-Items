@@ -53,6 +53,7 @@ public class EnchantmentManageMenu extends Menu {
                         p.removeMetadata("ENCHANT_WORING_WITH", pl);
                         p.removeMetadata("ACTION", pl);
                         event.setCancelled(true);
+                        p.sendMessage("Testy Test");
                         Open(p);
                     }
 
