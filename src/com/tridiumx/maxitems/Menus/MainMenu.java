@@ -1,94 +1,66 @@
 package com.tridiumx.maxitems.Menus;
 
-import org.bukkit.ChatColor;
+import com.tridiumx.maxitems.MaxItems;
+import com.tridiumx.maxitems.MenuUtils.GUIPlayer;
+import com.tridiumx.maxitems.MenuUtils.page.GUIInventory;
+import com.tridiumx.maxitems.MenuUtils.page.GUIPage;
+import com.tridiumx.maxitems.MenuUtils.page.PageInventory;
+import com.tridiumx.maxitems.Utils.Chat;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by TridiumX on 7/11/2016.
+ * Created by TridiumX on 7/16/2016.
  */
-public class MainMenu extends Menu {
+public class MainMenu extends GUIPage<MaxItems> {
+
+    public MainMenu(MaxItems plugin, GUIPlayer player){
+        super(plugin, player, Chat.color("&bMain Menu"));
+    }
 
 
     @Override
-    public void registerItems() {
-        for(String key : pl.getConfig().getConfigurationSection("itempacks").getKeys(false)){
+    protected GUIInventory loadInventory() {
+        PageInventory inventory = new PageInventory(player, title);
+        for(String pack : plugin.getConfig().getConfigurationSection("itempacks").getKeys(false)){
+            if(plugin.getConfig().getBoolean("itempacks." + pack)){
 
-            pl.getLogger().info(key + "=" + pl.getConfig().getString("itempacks." + key)); //TAKEOUT
-            if(pl.getConfig().getString("itempacks." + key) == "true"){
-
-                pl.getLogger().info(key + "will be loaded"); //TAKEOUT
-                File cfile = new File(pl.getDataFolder(), key + ".yml");
-
-                if (cfile != null) {
-                    pl.getLogger().info("Cfile is not null"); //TAKEOUT
-                    Configuration pack = YamlConfiguration.loadConfiguration(cfile);
-                    for(String item : pack.getKeys(false)){
-                        pl.getLogger().info(item); //TAKEOUT
-                        ItemStack is = new ItemStack(Material.getMaterial(pack.getString(item + ".material")));
+                File file = new File(plugin.getDataFolder(), pack + ".yml");
+                if(!file.exists()){
+                    plugin.getLogger().info("Item pack " + pack + "does not exist!");
+                }else{
+                    Configuration config = YamlConfiguration.loadConfiguration(file);
+                    for(String key : config.getKeys(false)){
+                        ItemStack is = new ItemStack(Material.getMaterial(config.getString(key + ".material")));
                         ItemMeta im = is.getItemMeta();
-                        im.setDisplayName(item);
-                        List<String> lores = new ArrayList<>();
-                        lores.add(lores.size(), ChatColor.GREEN + "Click to edit item!");
-                        lores.add(lores.size(), ChatColor.GOLD + "Item Pack: " + ChatColor.GRAY + key);
-                        im.setLore(lores);
+                        im.setDisplayName(Chat.color("&5&l" + key));
+                        im.setLore(Arrays.asList(Chat.color("&b" + pack), Chat.color("&aClick to edit!")));
                         is.setItemMeta(im);
-
-                        inv.addItem(is);
-
+                        inventory.addItem(is);
                     }
                 }
             }
+
         }
 
+        return inventory;
+
+
+
     }
-
-
 
     @Override
-    public void eventHandler(Event e) {
-        if(e instanceof InventoryClickEvent){
-            InventoryClickEvent ev = (InventoryClickEvent) e;
-            if(ev.getInventory().getTitle().equalsIgnoreCase(inv.getTitle())){
-                Player p = (Player) ev.getWhoClicked();
-                if(ev.getCurrentItem() != null && ev.getCurrentItem().getType() != Material.AIR){
-                    pl.getLogger().info("Clicked Not air or null");//TAKEOUT
-                    setPlayerMeta(p, "ITEM_WORKING_WITH", ChatColor.stripColor(ev.getCurrentItem().getItemMeta().getDisplayName()));
-                    for(String lores : (ev.getCurrentItem().getItemMeta().getLore())){
-                        if(lores.contains("Item Pack")){
-                            String s = ChatColor.stripColor(lores);
-                            s = s.replace("Item Pack: ", "");
-                            setPlayerMeta(p, "ITEMPACK", s);
+    protected void onInventoryClick(InventoryClickEvent event) {
+        List<String> lores = event.getCurrentItem().getItemMeta().getLore();
 
-                        }
-                    }
-
-                    Menu nextMenu = new StatManageMenu();
-                    nextMenu.p = p;
-                    nextMenu.init(27, "Edit Stats", pl, manager);
-
-                    ev.setCancelled(true);
-                    nextMenu.Open(p);
-
-                }
-            }
-        }
+        player.openPage(new StatSelect(plugin, player, Chat.strip(event.getCurrentItem().getItemMeta().getDisplayName()),Chat.strip(lores.get(0))),true);
     }
-
-
 }
