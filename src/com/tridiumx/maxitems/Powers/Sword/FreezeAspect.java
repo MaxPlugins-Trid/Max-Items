@@ -34,9 +34,12 @@ public class FreezeAspect extends MaxPowerSword{
 
                 double chance = Math.random();
 
-                    if(event.getEntity() instanceof Player) {
+                if(chance > 0.7) {
+
+                    if (event.getEntity() instanceof Player) {
                         main.statusManager.setPlayerStatus((Player) event.getEntity(), Status.FROZEN);
                     }
+                }
 
 
             }
