@@ -7,6 +7,8 @@ import com.tridiumx.maxitems.MenuUtils.GUIPlayer;
 import com.tridiumx.maxitems.Menus.MainMenu;
 import com.tridiumx.maxitems.Powers.PowerManager;
 import com.tridiumx.maxitems.Utils.CoolDownGenerator;
+import com.tridiumx.maxitems.Utils.Status;
+import com.tridiumx.maxitems.Utils.StatusManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -39,6 +41,7 @@ public class MaxItems extends JavaPlugin{
     private ItemManager itemManager;
     private PowerManager powerManager;
     public CoolDownGenerator cdManager;
+    public StatusManager statusManager;
 
 
 
@@ -60,9 +63,10 @@ public class MaxItems extends JavaPlugin{
 
         guiManager = new GUIManager(this);
         itemManager = new ItemManager();
-        powerManager = new PowerManager();
+        powerManager = new PowerManager(this);
         powerManager.loadPowers(this);
         cdManager = new CoolDownGenerator();
+        statusManager = new StatusManager(this);
 
 
 
@@ -95,6 +99,11 @@ public class MaxItems extends JavaPlugin{
                 }
             }
 
+
+        }
+
+        if(args[0].equalsIgnoreCase("freeze")){
+            statusManager.setPlayerStatus((Player) sender, Status.FROZEN);
         }
 
         return true;
