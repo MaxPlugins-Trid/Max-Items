@@ -71,9 +71,8 @@ public class EnchantmentEdit extends GUIPage<MaxItems> implements Listener{
     public void onChat(AsyncPlayerChatEvent event){
         if(lookingench){
             if(event.getPlayer().equals(player.player())){
-                player.player().sendMessage("player check true");//TAKEOUT
                 if(Chat.isInteger(event.getMessage())){
-                    player.player().sendMessage("Integer check true");//TAKEOUT
+
                     int i = Integer.parseInt(event.getMessage());
                     File file = new File(plugin.getDataFolder(), itemPack + ".yml");
                     Configuration pack = YamlConfiguration.loadConfiguration(file);
