@@ -5,6 +5,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
@@ -25,7 +26,14 @@ public abstract class MaxPowerBow extends MaxPower implements Listener{
             onArrowLand(event);
         }
     }
+    @EventHandler
+    public void onDamageMain(EntityDamageByEntityEvent event){
+        if(event.getDamager() instanceof Arrow){
+            onDamageByArrow(event);
+        }
+    }
 
     public abstract void onPlayerShoot(EntityShootBowEvent event);
     public abstract void onArrowLand(ProjectileHitEvent event);
+    public abstract void onDamageByArrow(EntityDamageByEntityEvent event);
 }

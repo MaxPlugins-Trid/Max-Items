@@ -1,6 +1,7 @@
 package com.tridiumx.maxitems.Powers;
 
 import com.tridiumx.maxitems.Powers.Bow.Blink;
+import com.tridiumx.maxitems.Powers.Bow.Transpose;
 import com.tridiumx.maxitems.Powers.Sword.LifeSteal;
 import com.tridiumx.maxitems.Utils.CoolDownGenerator;
 import org.bukkit.plugin.Plugin;
@@ -12,6 +13,7 @@ public class PowerManager {
     //Variable for powers
     MaxPower lifeSteal;
     MaxPower blink;
+    MaxPower transpose;
 
 
 
@@ -21,6 +23,8 @@ public class PowerManager {
         lifeSteal.onEnable(plugin, new CoolDownGenerator());
         blink = new Blink();
         blink.onEnable(plugin, new CoolDownGenerator());
+        transpose = new Transpose();
+        transpose.onEnable(plugin, new CoolDownGenerator());
 
 
     }

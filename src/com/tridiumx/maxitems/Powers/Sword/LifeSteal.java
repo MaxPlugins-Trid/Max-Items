@@ -28,10 +28,10 @@ public class LifeSteal extends MaxPowerSword {
                 double newhealth = health + damage;
                 if(newhealth < entity.getMaxHealth()){
                     entity.setHealth(newhealth);
-                    entity.sendMessage(Chat.makeMessage("&7[&3LIFESTEAL&7]:", "&eYou have been healed some!"));
+                    entity.sendMessage(Chat.makeMessage(Chat.color("&7[&3LIFESTEAL&7]:"), "&eYou have been healed some!"));
                 }else{
                     entity.setHealth(entity.getMaxHealth());
-                    entity.sendMessage(Chat.makeMessage("&7[&3LIFESTEAL&7]:", "&eYou have been healed some!"));
+                    entity.sendMessage(Chat.makeMessage(Chat.color("&7[&3LIFESTEAL&7]:"), "&eYou have been healed some!"));
                 }
             }
         }

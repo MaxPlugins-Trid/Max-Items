@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -42,5 +43,10 @@ public class Blink extends MaxPowerBow {
             }
         }
 
+    }
+
+    @Override
+    public void onDamageByArrow(EntityDamageByEntityEvent event) {
+        return;
     }
 }
