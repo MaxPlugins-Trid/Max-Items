@@ -36,7 +36,7 @@ public class PowerEdit extends GUIPage<MaxItems> {
     @Override
     protected GUIInventory loadInventory() {
         PageInventory inv = new PageInventory(player, Chat.color("&3Powers"));
-        for(String power : Arrays.asList("LIFESTEAL", "BLINK", "PETWOLF")){
+        for(String power : Arrays.asList("LIFESTEAL", "BLINK", "TNT ARROW")){
             ItemStack is = new ItemStack(Material.COMMAND_MINECART);
             ItemMeta im = is.getItemMeta();
             im.setDisplayName(Chat.color("&a" + power));
